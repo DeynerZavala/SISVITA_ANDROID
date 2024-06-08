@@ -108,7 +108,7 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = viewMod
             Text(text = "INICIAR SESIÓN")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        TextButton(onClick = { /* Navegar a pantalla de registro */ }) {
+        TextButton(onClick = { navController.navigate(AppScreen.registrarUsuario.route) }) {
             Text("¿No tiene cuenta? Registrarse")
         }
     }
