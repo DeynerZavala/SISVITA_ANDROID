@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -26,7 +27,7 @@ import androidx.navigation.NavController
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TestHome(navController: NavController){
+fun TestHome(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -35,11 +36,13 @@ fun TestHome(navController: NavController){
                         text = "MENÚ",
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimary,  // Usar color del tema
                         fontWeight = FontWeight.Bold
                     )
                 },
-                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color(8,83,148))
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary  // Usar color del tema
+                )
             )
         }
     ) {
@@ -53,7 +56,7 @@ fun TestHome(navController: NavController){
             Text(
                 text = "¡Bienvenido!",
                 fontSize = 40.sp,
-                color = Color(8,83,148),
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
@@ -63,12 +66,12 @@ fun TestHome(navController: NavController){
                 contentDescription = null,
                 modifier = Modifier.size(300.dp)
             )
-
-             */
+            */
             Text(
                 text = "Seleccione una opción:",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,  // Usar color del tema
                 modifier = Modifier.padding(top = 16.dp)
             )
             Spacer(modifier = Modifier.height(16.dp))

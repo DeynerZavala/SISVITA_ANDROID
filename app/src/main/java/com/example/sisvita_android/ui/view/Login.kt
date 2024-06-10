@@ -6,15 +6,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -25,37 +21,34 @@ import androidx.navigation.NavController
 import com.example.sisvita_android.R
 import com.example.sisvita_android.navigation.AppScreen
 import com.example.sisvita_android.ui.viewmodel.LoginViewModel
-import kotlin.math.log
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Eye
+import compose.icons.fontawesomeicons.solid.EyeSlash
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Login(navController: NavController, loginViewModel: LoginViewModel = viewModel()) {
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val email: String by loginViewModel.correo.observeAsState("")
+    val password: String by loginViewModel.contrasena.observeAsState("")
+    val correoValido by loginViewModel.correoValido.observeAsState(false)
     var passwordVisible by remember { mutableStateOf(false) }
-    val loginResult by loginViewModel.loginResult.observeAsState()
-    val context = LocalContext.current
+    val isUserLoggedIn by loginViewModel.isUserLoggedIn.observeAsState()
+    val mensajeResult by loginViewModel.mensajeResult.observeAsState()
 
-    LaunchedEffect(loginResult) {
-        loginResult?.let {
-            if (it.message == "Inicio de sesión exitoso") {
-                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-                navController.navigate(AppScreen.testHome.route)
-            }
-            else if (it.message == "Credenciales inválidas"){
-                Toast.makeText(context, "Credenciales inválidas", Toast.LENGTH_SHORT).show()
-            }
-            else {
-                Toast.makeText(context, "ERROR DE CONEXION", Toast.LENGTH_SHORT).show()
-            }
+    LaunchedEffect(isUserLoggedIn) {
+        if(isUserLoggedIn == true){
+            navController.navigate(AppScreen.testHome.route)
         }
     }
+
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFE3F2FD))
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -68,48 +61,80 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = viewMod
         Spacer(modifier = Modifier.height(24.dp))
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it },
-            label = { Text("Correo") },
-            modifier = Modifier.fillMaxWidth()
+            onValueChange = { loginViewModel.onCorreoChange(it)},
+            label = { Text("Correo", style = MaterialTheme.typography.labelMedium) },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = MaterialTheme.typography.bodyLarge,
+            isError = !correoValido && email.isNotEmpty()
         )
+        if (!correoValido && email.isNotEmpty()) {
+            Text(
+                text = "Correo electrónico no válido",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+        }
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedTextField(
             value = password,
-            onValueChange = { password = it },
-            label = { Text("Contraseña") },
+            onValueChange = {loginViewModel.onContrasenaChange(it) },
+            label = { Text("Contraseña", style = MaterialTheme.typography.labelMedium) },
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 val image = if (passwordVisible)
-                    Icons.Filled.KeyboardArrowDown
+                    FontAwesomeIcons.Solid.EyeSlash
                 else
-                    Icons.Filled.KeyboardArrowUp
+                    FontAwesomeIcons.Solid.Eye
 
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(imageVector = image, contentDescription = null)
+                    Icon(imageVector = image, contentDescription = null, modifier = Modifier.size(20.dp))
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = MaterialTheme.typography.bodyLarge
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(10.dp))
+        mensajeResult?.let {
+            if(isUserLoggedIn==false){
+                Text(text = it,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(15.dp))
         Button(
             onClick = {
-                if (email.isNotEmpty() && password.isNotEmpty()) {
-                    loginViewModel.login(email, password)
-
-
-
-                } else {
-                    Toast.makeText(context, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
-                }
+                    loginViewModel.login()
             },
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(8.dp)
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary
+            )
         ) {
-            Text(text = "INICIAR SESIÓN")
+            Text(
+                text = "INICIAR SESIÓN",
+                color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.labelMedium
+            )
         }
         Spacer(modifier = Modifier.height(16.dp))
         TextButton(onClick = { navController.navigate(AppScreen.registrarUsuario.route) }) {
-            Text("¿No tiene cuenta? Registrarse")
+            Text(
+                text = "¿No tiene cuenta? Registrarse",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }
