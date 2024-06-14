@@ -1,17 +1,20 @@
 package com.example.sisvita_android.navigation
 
+import Home
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.sisvita_android.ui.view.Login
-import com.example.sisvita_android.navigation.AppScreen
+import com.example.sisvita_android.ui.view.RealizarTest
 import com.example.sisvita_android.ui.view.RegistrarUsuario
 import com.example.sisvita_android.ui.view.TestHome
-import com.example.sisvita_android.ui.viewmodel.LoginViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation(){
     val navController = rememberNavController()
@@ -20,13 +23,21 @@ fun AppNavigation(){
         composable(route = AppScreen.login.route){
             Login(navController)
         }
-        composable(route= AppScreen.testHome.route){
-            TestHome(navController)
+        composable(route= AppScreen.home.route){
+            Home(navController)
         }
         composable(route = AppScreen.registrarUsuario.route){
             RegistrarUsuario(navController)
         }
-
+        composable(route = AppScreen.testHome.route){
+            TestHome(navController)
+        }
+        composable(
+            route = AppScreen.realizarTest.route + "/{testId}",
+            arguments = listOf(navArgument("testId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            RealizarTest(backStackEntry.arguments?.getInt("testId") ?: 0, navController)
+        }
     }
 
 }

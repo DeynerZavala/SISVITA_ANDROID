@@ -40,7 +40,7 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = viewMod
 
     LaunchedEffect(isUserLoggedIn) {
         if(isUserLoggedIn == true){
-            navController.navigate(AppScreen.testHome.route)
+            navController.navigate(AppScreen.home.route)
         }
     }
 
@@ -114,6 +114,7 @@ fun Login(navController: NavController, loginViewModel: LoginViewModel = viewMod
         Spacer(modifier = Modifier.height(15.dp))
         Button(
             onClick = {
+                    loginViewModel.onMensajeChange("")
                     loginViewModel.login()
             },
             modifier = Modifier.fillMaxWidth(),

@@ -15,7 +15,7 @@ class LoginViewModel : ViewModel() {
     private val _loginResult = MutableLiveData<LoginResponse?>()
     val loginResult: LiveData<LoginResponse?> get() = _loginResult
 
-    private val _isUserLoggedIn = MutableLiveData(false)
+    private val _isUserLoggedIn = MutableLiveData(true)
     val isUserLoggedIn: LiveData<Boolean> get() = _isUserLoggedIn
 
     private val _mensajeResult = MutableLiveData("")
@@ -36,6 +36,9 @@ class LoginViewModel : ViewModel() {
     }
     fun onContrasenaChange(newContrasena: String) {
         _contrasena.value = newContrasena
+    }
+    fun onMensajeChange(newMessage:String){
+        _mensajeResult.value = newMessage
     }
 
     fun login() {
