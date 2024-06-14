@@ -5,6 +5,7 @@ import com.example.sisvita_android.data.model.LoginRequest
 import com.example.sisvita_android.data.model.LoginResponse
 import com.example.sisvita_android.data.model.RegistrarUsuarioRequest
 import com.example.sisvita_android.data.model.RegistrarUsuarioResponse
+import com.example.sisvita_android.data.model.UsuarioResponse
 import com.example.sisvita_android.network.RetrofitClient
 
 import retrofit2.Call
@@ -36,6 +37,18 @@ class UserRepository {
             }
 
             override fun onFailure(call: Call<RegistrarUsuarioResponse>, t:Throwable) {
+                callback(null)
+            }
+        })
+    }
+
+    fun getUsuario(id:Int, callback: (UsuarioResponse?) -> Unit){
+        RetrofitClient.apiService.getUsuario(id).enqueue(object : Callback<UsuarioResponse>{
+            override fun onResponse(call: Call<UsuarioResponse>, response: Response<UsuarioResponse>) {
+                callback(response.body())
+            }
+
+            override fun onFailure(call: Call<UsuarioResponse>, t:Throwable) {
                 callback(null)
             }
         })

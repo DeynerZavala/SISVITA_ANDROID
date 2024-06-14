@@ -40,6 +40,7 @@ import com.example.sisvita_android.navigation.AppNavigation
 import com.example.sisvita_android.navigation.AppScreen
 import com.example.sisvita_android.ui.theme.backgroundDark
 import com.example.sisvita_android.ui.viewmodel.LoginViewModel
+import com.example.sisvita_android.utils.UserManager
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,7 +77,7 @@ fun Home(navController: NavController) {
                 modifier = Modifier.size(200.dp)
             )
             Spacer(modifier = Modifier.height(20.dp))
-
+            InformationCard()
             Spacer(modifier = Modifier.height(20.dp))
             Button(onClick = { navController.navigate(AppScreen.testHome.route) }) {
                 Text("Realizar Test")
@@ -93,40 +94,46 @@ fun Home(navController: NavController) {
         }
     }
 }
-//@Composable
-//fun InformationCard( loginViewModel: LoginViewModel = viewModel()) {
-//    val email: String by loginViewModel.correo.observeAsState("")
-//    Card(
-//
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(16.dp),
-//        colors = CardDefaults.cardColors(
-//            containerColor =  MaterialTheme.colorScheme.primary,
-//        )
-//    ) {
-//        Text(
-//            text = "Información",
-//            color = Color.White,
-//            textAlign = TextAlign.Left,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(8.dp),
-//        )
-//
-//        Column(
-//            modifier = Modifier
-//                .background(MaterialTheme.colorScheme.secondary)
-//                .padding(16.dp)
-//                .fillMaxWidth(),
-//            horizontalAlignment = Alignment.Start
-//        ) {
-//
-//            Text(
-//                text = email,
-//                color = Color.White
-//            )
-//        }
-//    }
-//
-//}
+@Composable
+fun InformationCard( loginViewModel: LoginViewModel = viewModel()) {
+    val email: String by loginViewModel.correo.observeAsState("")
+    val user = UserManager?.getUser()
+    if(user !=null){
+        Card(
+
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor =  MaterialTheme.colorScheme.primary,
+            )
+        ) {
+            Text(
+                text = "Información",
+                color = Color.White,
+                textAlign = TextAlign.Left,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+            )
+
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.secondary)
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.Start
+            ) {
+
+                Text(
+                    text = "Nombre : " + user.nombre+
+                            "\nApellidos : "+user.apellido_paterno + " " + user.apellido_materno+
+                            "\nCorreo : "+user.correo_electronico,
+                    color = Color.White
+                )
+            }
+        }
+    }
+
+
+}

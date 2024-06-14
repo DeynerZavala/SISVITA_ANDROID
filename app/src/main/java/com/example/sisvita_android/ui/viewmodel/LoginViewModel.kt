@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sisvita_android.data.model.LoginResponse
 import com.example.sisvita_android.data.respository.UserRepository
+import com.example.sisvita_android.utils.UserManager
 
 class LoginViewModel : ViewModel() {
 
@@ -15,7 +16,7 @@ class LoginViewModel : ViewModel() {
     private val _loginResult = MutableLiveData<LoginResponse?>()
     val loginResult: LiveData<LoginResponse?> get() = _loginResult
 
-    private val _isUserLoggedIn = MutableLiveData(true)
+    private val _isUserLoggedIn = MutableLiveData(false)
     val isUserLoggedIn: LiveData<Boolean> get() = _isUserLoggedIn
 
     private val _mensajeResult = MutableLiveData("")
@@ -57,6 +58,7 @@ class LoginViewModel : ViewModel() {
                 if (response?.message == "Inicio de sesión exitoso") {
                     _isUserLoggedIn.postValue(true)
                     _mensajeResult.postValue("")
+                    UserManager.setUser(response.data)
                 } else if (response?.message == "Credenciales inválidas") {
                     _mensajeResult.postValue("Dirección de email o contraseña incorrectas.")
 

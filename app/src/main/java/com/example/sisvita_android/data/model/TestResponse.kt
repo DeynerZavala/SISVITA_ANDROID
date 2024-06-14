@@ -1,7 +1,6 @@
 package com.example.sisvita_android.data.model
 
-data class LoginResponse(
+data class TestResponse(
     val message: String,
-    val status: Int,
-    val data: Usuario
+    val status: Int
 )
