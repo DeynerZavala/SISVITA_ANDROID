@@ -25,7 +25,6 @@ interface ApiService {
     fun registrarUsuario(@Body registrarUsuarioRequest: RegistrarUsuarioRequest): Call<RegistrarUsuarioResponse>
     @POST("especialistas")
     fun registrarEspecialista(@Body registrarEspecialistaRequest: RegistrarEspecialistaRequest): Call<RegistrarUsuarioResponse>
-
     @GET("test")
     fun getTests():Call<TestListResponse>
     @GET("titulo")

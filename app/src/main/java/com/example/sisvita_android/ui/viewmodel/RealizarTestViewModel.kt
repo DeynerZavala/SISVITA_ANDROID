@@ -1,4 +1,4 @@
-package com.example.sisvita_and
+package com.example. sisvita_and
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -17,7 +17,7 @@ class RealizarTestViewModel : ViewModel() {
     val testResult: LiveData<TestAllResponse?> get() = _testResult
 
     private val _selectedOptions =
-        MutableLiveData<Map<Int, Int?>>(mapOf())  // Map of question ID to selected option ID
+        MutableLiveData<Map<Int, Int?>>(mapOf())
     val selectedOptions: LiveData<Map<Int, Int?>> = _selectedOptions
 
     private val _testGuardado = MutableLiveData<TestResponse?>()
@@ -61,16 +61,16 @@ class RealizarTestViewModel : ViewModel() {
                     usuario_id = it.usuario_id
                 ) { response ->
                     _testGuardado.postValue(response)
-                    if ( _testGuardado.value?.message  == "Faltan datos en las preguntas"
-                        || _testGuardado.value?.message  =="Datos incompletos"){
+                    if ( response?.message  == "Faltan datos en las preguntas"
+                        || response?.message  =="Datos incompletos"){
 
                         _testMensaje.postValue("Por favor complete todas preguntas")
 
                 }
-                    else if (_testGuardado.value?.message  == "Error al guardar respuesta"){
+                    else if (response?.message  == "Error al guardar respuesta"){
                         _testMensaje.postValue("Error, Intente mas tarde")
                     }
-                    else if (_testGuardado.value?.message  == "Respuesta Guardada"){
+                    else if (response?.message == "Respuesta Guardada"){
                         _testMensaje.postValue("Respuesta Guardada")
                     }
                 }
