@@ -16,8 +16,8 @@ class LoginViewModel : ViewModel() {
     private val _loginResult = MutableLiveData<LoginResponse?>()
     val loginResult: LiveData<LoginResponse?> get() = _loginResult
 
-    private val _isUserLoggedIn = MutableLiveData(false)
-    val isUserLoggedIn: LiveData<Boolean> get() = _isUserLoggedIn
+    private val _isUserLoggedIn = MutableLiveData(UserManager.getActivo())
+    val isUserLoggedIn: MutableLiveData<Boolean?> get() = _isUserLoggedIn
 
     private val _mensajeResult = MutableLiveData("")
     val mensajeResult: LiveData<String> get() = _mensajeResult
@@ -58,10 +58,9 @@ class LoginViewModel : ViewModel() {
                 if (response?.message == "Inicio de sesión exitoso") {
                     _isUserLoggedIn.postValue(true)
                     _mensajeResult.postValue("")
-                    UserManager.setUser(response.data)
+                   UserManager.setUser(response.data, response.rol, true)
                 } else if (response?.message == "Credenciales inválidas") {
                     _mensajeResult.postValue("Dirección de email o contraseña incorrectas.")
-
                 } else {
                     _mensajeResult.postValue("Vuelva intentarlo mas tarde")
                     _isUserLoggedIn.postValue(false)

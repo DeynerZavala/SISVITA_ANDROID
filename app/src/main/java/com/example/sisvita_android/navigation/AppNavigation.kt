@@ -1,6 +1,6 @@
 package com.example.sisvita_android.navigation
 
-import Home
+import com.example.sisvita_android.ui.view.Home
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable

@@ -5,6 +5,7 @@ import com.example.sisvita_android.data.model.LoginRequest
 import com.example.sisvita_android.data.model.LoginResponse
 import com.example.sisvita_android.data.model.RegistrarUsuarioRequest
 import com.example.sisvita_android.data.model.RegistrarUsuarioResponse
+import com.example.sisvita_android.data.model.TituloResponse
 import com.example.sisvita_android.data.model.UsuarioResponse
 import com.example.sisvita_android.network.RetrofitClient
 
@@ -26,10 +27,10 @@ class UserRepository {
         })
     }
     fun registrarUsuario(nombre: String, apellidoPaterno: String, apellidoMaterno: String,
-                  correo: String, contrasena: String, callback: (RegistrarUsuarioResponse?) -> Unit){
+                  correo: String, contrasena: String, ubigeo:Int ,callback: (RegistrarUsuarioResponse?) -> Unit){
         val registrarUsuarioRequest = RegistrarUsuarioRequest(
             nombre=nombre, apellido_paterno = apellidoPaterno, apellido_materno = apellidoMaterno,
-            correo_electronico = correo, contrasena = contrasena
+            correo_electronico = correo, contrasena = contrasena , ubigeo = ubigeo
         )
         RetrofitClient.apiService.registrarUsuario(registrarUsuarioRequest).enqueue(object : Callback<RegistrarUsuarioResponse>{
             override fun onResponse(call: Call<RegistrarUsuarioResponse>, response: Response<RegistrarUsuarioResponse>) {
@@ -47,10 +48,11 @@ class UserRepository {
             override fun onResponse(call: Call<UsuarioResponse>, response: Response<UsuarioResponse>) {
                 callback(response.body())
             }
-
             override fun onFailure(call: Call<UsuarioResponse>, t:Throwable) {
                 callback(null)
             }
         })
     }
+
+
 }

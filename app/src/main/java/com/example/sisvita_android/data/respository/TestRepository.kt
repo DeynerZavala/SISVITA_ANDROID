@@ -7,6 +7,7 @@ import com.example.sisvita_android.data.model.TestListResponse
 import com.example.sisvita_android.data.model.TestRequest
 import com.example.sisvita_android.data.model.TestRequestPregunta
 import com.example.sisvita_android.data.model.TestResponse
+import com.example.sisvita_android.data.model.TituloResponse
 import com.example.sisvita_android.utils.DateUtils
 import com.example.sisvita_android.network.RetrofitClient
 import retrofit2.Call
