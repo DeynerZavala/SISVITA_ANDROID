@@ -9,10 +9,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.sisvita_android.ui.view.EvaluarTest
 import com.example.sisvita_android.ui.view.Login
+import com.example.sisvita_android.ui.view.MapaDeCalor
 import com.example.sisvita_android.ui.view.RealizarTest
 import com.example.sisvita_android.ui.view.RegistrarUsuario
 import com.example.sisvita_android.ui.view.TestHome
+import com.example.sisvita_android.ui.view.Vigilancia
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -37,6 +40,15 @@ fun AppNavigation(){
             arguments = listOf(navArgument("testId") { type = NavType.IntType })
         ) { backStackEntry ->
             RealizarTest(backStackEntry.arguments?.getInt("testId") ?: 0, navController)
+        }
+        composable(AppScreen.vigilancia.route){
+            Vigilancia(navController)
+        }
+        composable(AppScreen.evaluarTest.route){
+            EvaluarTest(navController)
+        }
+        composable(AppScreen.mapaDeCarlor.route){
+            MapaDeCalor(navController)
         }
     }
 

@@ -104,11 +104,11 @@ fun Home(navController: NavController) {
                     Text("Foro de Discusión")
                 }
             } else if (UserManager.getRol() == "Especialista") {
-                Button(onClick = { /* TODO: Handle click */ }) {
-                    Text("Consultar Resultado")
+                Button(onClick = { navController.navigate(AppScreen.vigilancia.route)}) {
+                    Text("Realizar Vigilancia")
                 }
-                Button(onClick = { /* TODO: Handle click */ }) {
-                    Text("Recomendaciones")
+                Button(onClick = { navController.navigate(AppScreen.mapaDeCarlor.route)}) {
+                    Text("Mapa De Calor")
                 }
             }
         }
