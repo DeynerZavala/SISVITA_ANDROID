@@ -13,18 +13,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.sisvita_android.ui.viewmodel.MapaDeCalorViewModel
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
-fun MapaDeCalor(navController: NavController) {
+fun MapaDeCalor(ids: List<Int>, navController: NavController, mapaDeCalorViewModel: MapaDeCalorViewModel = viewModel()) {
+    mapaDeCalorViewModel.setSelectedID(ids)
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = "MENÚ",
+                        text = "Mapa de Calor",
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         color = Color.White,

@@ -2,6 +2,8 @@ package com.example.sisvita_android.network
 
 import com.example.sisvita_android.data.model.LoginRequest
 import com.example.sisvita_android.data.model.LoginResponse
+import com.example.sisvita_android.data.model.MapaDeCalorRequest
+import com.example.sisvita_android.data.model.MapaDeCalorResponse
 import com.example.sisvita_android.data.model.RegistrarEspecialistaRequest
 import com.example.sisvita_android.data.model.RegistrarUsuarioRequest
 import com.example.sisvita_android.data.model.RegistrarUsuarioResponse
@@ -40,4 +42,6 @@ interface ApiService {
     fun setRespuestaTest(@Body testRequest: TestRequest): Call<TestResponse>
     @GET("test/vigilancia")
     fun getVigilancia(): Call<VigilanciaResponse>
+    @POST("test/mapadecalor")
+    fun getMapaDeCalor(@Body mapaDeCalorRequest: MapaDeCalorRequest): Call<MapaDeCalorResponse>
 }

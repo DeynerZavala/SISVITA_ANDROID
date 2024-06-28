@@ -2,6 +2,7 @@ package com.example.sisvita_android.ui.viewmodel
 
 import android.icu.text.SimpleDateFormat
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -40,6 +41,9 @@ class VigilanciaViewModel : ViewModel() {
     private val _fechaFin = MutableLiveData<LocalDate?>(LocalDate.now())
     val fechaFin: LiveData<LocalDate?> @RequiresApi(Build.VERSION_CODES.O)
     get() = _fechaFin
+
+    private val _selectedResUserIds = MutableLiveData<Set<Int>>(emptySet())
+    val selectedResUserIds: LiveData<Set<Int>> get() = _selectedResUserIds
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun onSelectedTestTipo(titulo: String) {
@@ -124,5 +128,15 @@ class VigilanciaViewModel : ViewModel() {
         } catch (e: Exception) {
             null
         }
+    }
+
+    fun toggleSelection(resUserId: Int) {
+        val currentSelection = _selectedResUserIds.value.orEmpty()
+        _selectedResUserIds.value = if (currentSelection.contains(resUserId)) {
+            currentSelection - resUserId
+        } else {
+            currentSelection + resUserId
+        }
+        Log.v("SELECCIONAR CELDA : ",_selectedResUserIds.value.toString())
     }
 }

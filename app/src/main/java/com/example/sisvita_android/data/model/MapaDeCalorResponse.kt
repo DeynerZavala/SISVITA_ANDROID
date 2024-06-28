@@ -6,6 +6,7 @@ data class MapaDeCalorResponse (
     val data : ArrayList<MapaDeCalorData>
 )
 data class MapaDeCalorData(
+    val res_user_id:Int,
     val ubigeo: Int,
     val puntuacion: Int,
     val semaforo: String

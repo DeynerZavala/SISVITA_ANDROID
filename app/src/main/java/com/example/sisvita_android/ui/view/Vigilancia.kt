@@ -10,7 +10,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
@@ -57,17 +59,28 @@ import java.util.Date
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Vigilancia(
-    navController: NavController?,
+    navController: NavController,
     vigilanciaViewModel: VigilanciaViewModel = viewModel()
 ) {
     val vigilanciaList by vigilanciaViewModel.vigilanciaVista.observeAsState()
-    val coroutineScope = rememberCoroutineScope()
-    var selectedResUserIds by remember { mutableStateOf(setOf<Int>()) }
+    val selectedResUserIds by vigilanciaViewModel.selectedResUserIds.observeAsState(emptySet())
+    var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        coroutineScope.launch {
-            vigilanciaViewModel.getVigilancia()
-        }
+        vigilanciaViewModel.getVigilancia()
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Error") },
+            text = { Text("Seleccione al menos un elemento") },
+            confirmButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("OK")
+                }
+            }
+        )
     }
 
     Scaffold(
@@ -85,37 +98,52 @@ fun Vigilancia(
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
             )
+        },
+        bottomBar = {
+            Button(
+                onClick = {
+                    if (selectedResUserIds.isNotEmpty()) {
+                        val resUserIdsString = selectedResUserIds.joinToString(",")
+                        navController.navigate("mapaDeCalor/$resUserIdsString")
+                    } else {
+                        showDialog = true
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Text("Enviar Selección", color = Color.White)
+            }
         }
     ) {
-            LazyColumn(
-                contentPadding = it,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(4.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    Periodo()
-                    TestTipo()
-                    TestNivel()
-                }
-                item {
-                    TableHeader()
-                }
-                vigilanciaList?.let { list ->
-                    items(list.data) { item ->
-                        VigilanciaRow(item, selectedResUserIds) { selectedId ->
-                            selectedResUserIds = if (selectedResUserIds.contains(selectedId)) {
-                                selectedResUserIds - selectedId
-                            } else {
-                                selectedResUserIds + selectedId
-                            }
-                        }
+        LazyColumn(
+            contentPadding = it,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            item {
+                Periodo()
+                TestTipo()
+                TestNivel()
+            }
+            item {
+                TableHeader()
+            }
+            vigilanciaList?.let { list ->
+                items(list.data) { item ->
+                    VigilanciaRow(item, selectedResUserIds) { selectedId ->
+                        vigilanciaViewModel.toggleSelection(selectedId)
                     }
                 }
             }
-
+        }
     }
 }
 
@@ -166,7 +194,7 @@ fun VigilanciaRow(vigilancia: VigilanciaData, selectedResUserIds: Set<Int>, onSe
             .fillMaxWidth()
             .padding(vertical = 1.dp)
             .clickable { onSelect(vigilancia.res_user_id) }
-            .background(if (isSelected) Color.LightGray else Color.White),
+            .background(if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else Color.White),
         shape = MaterialTheme.shapes.medium
     ) {
         Row(modifier = Modifier.padding(2.dp)) {

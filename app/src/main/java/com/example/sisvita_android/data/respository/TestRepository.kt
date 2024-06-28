@@ -2,12 +2,14 @@ package com.example.sisvita_android.data.respository
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.sisvita_android.data.model.MPData
+import com.example.sisvita_android.data.model.MapaDeCalorRequest
+import com.example.sisvita_android.data.model.MapaDeCalorResponse
 import com.example.sisvita_android.data.model.TestAllResponse
 import com.example.sisvita_android.data.model.TestListResponse
 import com.example.sisvita_android.data.model.TestRequest
 import com.example.sisvita_android.data.model.TestRequestPregunta
 import com.example.sisvita_android.data.model.TestResponse
-import com.example.sisvita_android.data.model.TituloResponse
 import com.example.sisvita_android.data.model.VigilanciaResponse
 import com.example.sisvita_android.utils.DateUtils
 import com.example.sisvita_android.network.RetrofitClient
@@ -75,6 +77,24 @@ class TestRepository {
                     callback(response.body())
                 }
                 override fun onFailure(call: Call<VigilanciaResponse>, t: Throwable) {
+                    callback(null)
+                }
+            }
+        )
+    }
+    fun getMapaDeCalor(ids: List<Int>?, callback: (MapaDeCalorResponse?) -> Unit){
+        val temp : ArrayList<MPData> = arrayListOf()
+        for (id in ids!!){
+            temp.add(MPData(id))
+
+        }
+        val send = MapaDeCalorRequest(temp)
+        RetrofitClient.apiService.getMapaDeCalor(send).enqueue(
+            object:Callback<MapaDeCalorResponse>{
+                override fun onResponse( call:Call<MapaDeCalorResponse>, response: Response<MapaDeCalorResponse>) {
+                    callback(response.body())
+                }
+                override fun onFailure(call: Call<MapaDeCalorResponse>, t: Throwable) {
                     callback(null)
                 }
             }

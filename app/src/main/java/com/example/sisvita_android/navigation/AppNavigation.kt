@@ -47,8 +47,12 @@ fun AppNavigation(){
         composable(AppScreen.evaluarTest.route){
             EvaluarTest(navController)
         }
-        composable(AppScreen.mapaDeCarlor.route){
-            MapaDeCalor(navController)
+        composable(
+            route = AppScreen.mapaDeCarlor.route + "/{res_user_ids}",
+            arguments = listOf(navArgument("res_user_ids") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val resUserIds = backStackEntry.arguments?.getString("res_user_ids")?.split(",")?.map { it.toInt() } ?: emptyList()
+            MapaDeCalor(resUserIds, navController)
         }
     }
 
