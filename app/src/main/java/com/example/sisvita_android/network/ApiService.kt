@@ -11,6 +11,7 @@ import com.example.sisvita_android.data.model.TestRequest
 import com.example.sisvita_android.data.model.TestResponse
 import com.example.sisvita_android.data.model.TituloResponse
 import com.example.sisvita_android.data.model.UsuarioResponse
+import com.example.sisvita_android.data.model.VigilanciaResponse
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -19,6 +20,8 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ApiService {
+    @POST("hello")
+    fun hello():Call<Void>
     @POST("usuarios/login")
     fun login(@Body loginRequest: LoginRequest): Call<LoginResponse>
     @POST("usuarios")
@@ -35,5 +38,6 @@ interface ApiService {
     fun getUsuario(@Path("usuario_id") usuario_id:Int): Call<UsuarioResponse>
     @POST("test/responder")
     fun setRespuestaTest(@Body testRequest: TestRequest): Call<TestResponse>
-
+    @GET("test/vigilancia")
+    fun getVigilancia(): Call<VigilanciaResponse>
 }

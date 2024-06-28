@@ -13,7 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.sisvita_android.navigation.AppNavigation
+import com.example.sisvita_android.network.RetrofitClient
 import com.example.sisvita_android.ui.theme.SISVITA_ANDROIDTheme
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -26,8 +30,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppNavigation()
-
+                    RetrofitClient.apiService.hello().enqueue(object : Callback<Void> {
+                        override fun onResponse(call: Call<Void>, response: Response<Void>) {
+                        }
+                        override fun onFailure(call: Call<Void>, t: Throwable) {
+                        }
+                    })
+                    AppNavigation ()
                 }
             }
         }

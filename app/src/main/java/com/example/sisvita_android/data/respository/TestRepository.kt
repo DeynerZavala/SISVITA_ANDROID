@@ -8,6 +8,7 @@ import com.example.sisvita_android.data.model.TestRequest
 import com.example.sisvita_android.data.model.TestRequestPregunta
 import com.example.sisvita_android.data.model.TestResponse
 import com.example.sisvita_android.data.model.TituloResponse
+import com.example.sisvita_android.data.model.VigilanciaResponse
 import com.example.sisvita_android.utils.DateUtils
 import com.example.sisvita_android.network.RetrofitClient
 import retrofit2.Call
@@ -67,6 +68,16 @@ class TestRepository {
             }
         })
     }
-
-
+    fun getVigilancia(callback: (VigilanciaResponse?) -> Unit){
+        RetrofitClient.apiService.getVigilancia().enqueue(
+            object: Callback<VigilanciaResponse>{
+                override fun onResponse( call:Call<VigilanciaResponse>, response: Response<VigilanciaResponse>) {
+                    callback(response.body())
+                }
+                override fun onFailure(call: Call<VigilanciaResponse>, t: Throwable) {
+                    callback(null)
+                }
+            }
+        )
+    }
 }

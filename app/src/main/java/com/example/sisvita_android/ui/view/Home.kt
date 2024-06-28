@@ -7,6 +7,8 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -36,18 +38,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sisvita_android.R
 import com.example.sisvita_android.navigation.AppScreen
+import com.example.sisvita_android.network.RetrofitClient
 import com.example.sisvita_android.ui.viewmodel.LoginViewModel
 import com.example.sisvita_android.utils.UserManager
 import compose.icons.AllIcons
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.WindowClose
+import retrofit2.Call
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(navController: NavController) {
     var showLogoutDialog by remember { mutableStateOf(false) }
+
 
     Scaffold(
         topBar = {
@@ -74,41 +79,55 @@ fun Home(navController: NavController) {
             )
         }
     ) {
-        Column(
+        LazyColumn(
+            contentPadding = it,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
-            Image(
-                painter = painterResource(id = R.drawable.sisvita_logo),
-                contentDescription = "Profile Icon",
-                modifier = Modifier.size(200.dp)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            InformationCard()
-            Spacer(modifier = Modifier.height(20.dp))
+            item {
+                Image(
+                    painter = painterResource(id = R.drawable.sisvita_logo),
+                    contentDescription = "Profile Icon",
+                    modifier = Modifier.size(200.dp)
+                )
+            }
+            item {
+                InformationCard()
+            }
             if (UserManager.getRol() == "Usuario") {
-                Button(onClick = { navController.navigate(AppScreen.testHome.route) }) {
-                    Text("Realizar Test")
+                item {
+                    Button(onClick = { navController.navigate(AppScreen.testHome.route) }) {
+                        Text("Realizar Test")
+                    }
                 }
-                Button(onClick = { /* TODO: Handle click */ }) {
-                    Text("Consultar Resultado")
+                item {
+                    Button(onClick = { /* TODO: Handle click */ }) {
+                        Text("Consultar Resultado")
+                    }
                 }
-                Button(onClick = { /* TODO: Handle click */ }) {
-                    Text("Recomendaciones")
+                item {
+                    Button(onClick = { /* TODO: Handle click */ }) {
+                        Text("Recomendaciones")
+                    }
                 }
-                Button(onClick = { /* TODO: Handle click */ }) {
-                    Text("Foro de Discusión")
+                item {
+                    Button(onClick = { /* TODO: Handle click */ }) {
+                        Text("Foro de Discusión")
+                    }
                 }
             } else if (UserManager.getRol() == "Especialista") {
-                Button(onClick = { navController.navigate(AppScreen.vigilancia.route)}) {
-                    Text("Realizar Vigilancia")
+                item {
+                    Button(onClick = { navController.navigate(AppScreen.vigilancia.route) }) {
+                        Text("Realizar Vigilancia")
+                    }
                 }
-                Button(onClick = { navController.navigate(AppScreen.mapaDeCarlor.route)}) {
-                    Text("Mapa De Calor")
+                item {
+                    Button(onClick = { navController.navigate(AppScreen.mapaDeCarlor.route) }) {
+                        Text("Mapa De Calor")
+                    }
                 }
             }
         }
