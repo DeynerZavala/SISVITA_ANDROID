@@ -50,12 +50,19 @@ android {
 }
 
 dependencies {
+    //retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.9.1")
+    //iconos
     implementation ("br.com.devsrsouza.compose.icons:font-awesome:1.1.0")
+    //layout
     implementation ("androidx.compose.foundation:foundation-layout:1.3.1")
+    //calendario
     implementation ("androidx.compose.material3:material3:1.2.0-alpha02")
+    // OSMDroid
+    implementation ("org.osmdroid:osmdroid-android:6.1.18")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

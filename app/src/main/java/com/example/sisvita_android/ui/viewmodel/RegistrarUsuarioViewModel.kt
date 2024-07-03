@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sisvita_android.data.model.RegistrarUsuarioResponse
 import com.example.sisvita_android.data.model.TituloData
-import com.example.sisvita_android.data.model.TituloResponse
 import com.example.sisvita_android.data.respository.EspecialistaRepository
+import com.example.sisvita_android.data.respository.UbigeoRespository
 import com.example.sisvita_android.data.respository.UserRepository
 
 class RegistrarUsuarioViewModel : ViewModel() {
@@ -62,6 +62,98 @@ class RegistrarUsuarioViewModel : ViewModel() {
 
     private val _selectedDropdownItem = MutableLiveData<TituloData?>()
     val selectedDropdownItem: LiveData<TituloData?> get() = _selectedDropdownItem
+
+
+    private val ubigeoRepository = UbigeoRespository()
+
+    private val _departamento = MutableLiveData("")
+    val departamento: LiveData<String> get() = _departamento
+
+    private val _provincia = MutableLiveData("")
+    val provincia: LiveData<String> get() = _provincia
+
+    private val _distrito = MutableLiveData("")
+    val distrito: LiveData<String> get() = _distrito
+
+    private val _departamentos = MutableLiveData<List<String>>()
+    val departamentos: LiveData<List<String>> get() = _departamentos
+
+    private val _provincias = MutableLiveData<List<String>>()
+    val provincias: LiveData<List<String>> get() = _provincias
+
+    private val _distritos = MutableLiveData<List<String>>()
+    val distritos: LiveData<List<String>> get() = _distritos
+
+    private val _departamentoMenuExpanded = MutableLiveData(false)
+    val departamentoMenuExpanded: LiveData<Boolean> get() = _departamentoMenuExpanded
+
+    private val _provinciaMenuExpanded = MutableLiveData(false)
+    val provinciaMenuExpanded: LiveData<Boolean> get() = _provinciaMenuExpanded
+
+    private val _distritoMenuExpanded = MutableLiveData(false)
+    val distritoMenuExpanded: LiveData<Boolean> get() = _distritoMenuExpanded
+
+
+    init {
+        fetchDepartamentos()
+    }
+
+    fun fetchDepartamentos() {
+        ubigeoRepository.getDepartamentos { response ->
+            response?.data?.let { data ->
+                _departamentos.postValue(data)
+            }
+        }
+    }
+
+
+fun fetchProvincias(departamento: String) {
+    ubigeoRepository.getProvincias(departamento) { response ->
+        response?.data?.let { data ->
+            _provincias.postValue(data)
+        }
+    }
+}
+
+fun fetchDistritos(provincia: String) {
+    ubigeoRepository.getDistritos(provincia) { response ->
+        response?.data?.let { data ->
+            _distritos.postValue(data)
+        }
+    }
+}
+    fun onDepartamentoChange(newDepartamento: String) {
+        _departamento.value = newDepartamento
+        _provincia.value = ""
+        _distrito.value = ""
+        _provincias.value = emptyList()
+        _distritos.value = emptyList()
+        fetchProvincias(newDepartamento)
+    }
+
+    fun onProvinciaChange(newProvincia: String) {
+        _provincia.value = newProvincia
+        _distrito.value = ""
+        _distritos.value = emptyList()
+        fetchDistritos(newProvincia)
+    }
+
+    fun onDistritoChange(newDistrito: String) {
+        _distrito.value = newDistrito
+    }
+
+
+    fun onDepartamentoMenuExpandedChange() {
+        _departamentoMenuExpanded.value = _departamentoMenuExpanded.value != true
+    }
+
+    fun onProvinciaMenuExpandedChange() {
+        _provinciaMenuExpanded.value = _provinciaMenuExpanded.value != true
+    }
+
+    fun onDistritoMenuExpandedChange() {
+        _distritoMenuExpanded.value = _distritoMenuExpanded.value != true
+    }
 
     fun iniciarTitulo() {
         especialistaRespository.getTitulos { response ->
@@ -120,10 +212,13 @@ class RegistrarUsuarioViewModel : ViewModel() {
         val correo = _correo.value ?: ""
         val contrasena = _contrasena.value ?: ""
         val confirmarContrasena = _confirmarContrasena.value ?: ""
-        val ubigeo = _ubigeo.value?.toIntOrNull()
+        val departamento = _departamento.value ?: ""
+        val provincia = _provincia.value ?: ""
+        val distrito = _distrito.value ?: ""
 
         if (nombre.isEmpty() || apellidoPaterno.isEmpty() || apellidoMaterno.isEmpty() ||
-            correo.isEmpty() || contrasena.isEmpty() || confirmarContrasena.isEmpty() || ubigeo == null) {
+            correo.isEmpty() || contrasena.isEmpty() || confirmarContrasena.isEmpty() ||
+            departamento.isEmpty() || provincia.isEmpty() || distrito.isEmpty()) {
             _registroValido.postValue(false)
             _mensajeResult.postValue("Complete todos los campos")
             return
@@ -134,57 +229,44 @@ class RegistrarUsuarioViewModel : ViewModel() {
         } else if (_contrasenaValido.value == false) {
             _mensajeResult.postValue("Contrasenas no conciden")
         } else {
-
-            if(_selectedRole.value == "Estudiante"){
+            if (_selectedRole.value == "Estudiante") {
                 userRepository.registrarUsuario(
                     nombre = nombre, apellidoPaterno = apellidoPaterno, apellidoMaterno = apellidoMaterno,
-                    correo = correo, contrasena = contrasena, ubigeo = ubigeo
+                    correo = correo, contrasena = contrasena, departamento = departamento,
+                    provincia = provincia, distrito = distrito
                 ) { response ->
                     _registrarResult.postValue(response)
                     if (response?.message == "Nuevo Usuario creado") {
                         _registroValido.postValue(true)
                         _mensajeResult.postValue("")
-                    } else if (response?.message == "Datos incompletos") {
-                        _registroValido.postValue(false)
-                        _mensajeResult.postValue("Complete todos los campos")
-                    } else if (response?.message == "Correo electrónico ya registrado") {
-                        _registroValido.postValue(false)
-                        _mensajeResult.postValue("Correo electrónico ya registrado")
                     } else {
                         _registroValido.postValue(false)
-                        _mensajeResult.postValue("Error al crear el usuario")
+                        _mensajeResult.postValue(response?.message ?: "Error al crear el usuario")
                     }
                 }
-            }
-            else if (_selectedRole.value == "Especialista"){
-                if(selectedDropdownItem.value == null){
+            } else if (_selectedRole.value == "Especialista") {
+                if (_selectedDropdownItem.value == null) {
                     _registroValido.postValue(false)
                     _mensajeResult.postValue("Escoge un titulo")
                     return
                 }
                 especialistaRespository.registrarEspecialista(
                     nombre = nombre, apellidoPaterno = apellidoPaterno, apellidoMaterno = apellidoMaterno,
-                    correo = correo, contrasena = contrasena, ubigeo = ubigeo,
-                    titulo_id = selectedDropdownItem.value!!.titulo_id
-                ){ response ->
+                    correo = correo, contrasena = contrasena, departamento = departamento,
+                    provincia = provincia, distrito = distrito,
+                    titulo_id = _selectedDropdownItem.value!!.titulo_id
+                ) { response ->
                     _registrarResult.postValue(response)
                     if (response?.message == "Nuevo Especialista creado") {
                         _registroValido.postValue(true)
                         _mensajeResult.postValue("")
-                    } else if (response?.message == "Datos incompletos") {
-                        _registroValido.postValue(false)
-                        _mensajeResult.postValue("Complete todos los campos")
-                    } else if (response?.message == "Correo electrónico ya registrado") {
-                        _registroValido.postValue(false)
-                        _mensajeResult.postValue("Correo electrónico ya registrado")
                     } else {
                         _registroValido.postValue(false)
-                        _mensajeResult.postValue("Error al crear el especialista")
+                        _mensajeResult.postValue(response?.message ?: "Error al crear el especialista")
                     }
                 }
-
             }
-
         }
     }
+
 }

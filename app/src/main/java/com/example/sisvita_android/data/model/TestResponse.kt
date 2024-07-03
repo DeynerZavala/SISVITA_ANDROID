@@ -4,5 +4,6 @@ data class TestResponse(
     val message: String,
     val status: Int,
     val puntuacion: Int,
+    val estado: String,
     val semaforo: String
 )
