@@ -1,18 +1,17 @@
 package com.example.sisvita_android.ui.viewmodel
 
-import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.sisvita_android.data.model.VigilanciaData
 import com.example.sisvita_android.data.model.VigilanciaResponse
 import com.example.sisvita_android.data.respository.TestRepository
 import com.example.sisvita_android.utils.DateUtils
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 class VigilanciaViewModel : ViewModel() {
     private val testRepository = TestRepository()
@@ -28,7 +27,7 @@ class VigilanciaViewModel : ViewModel() {
     private val _selectedTestTipo = MutableLiveData<String>(null)
     val selectedTestTipo: LiveData<String> get() = _selectedTestTipo
 
-    private val _testNivel = MutableLiveData<ArrayList<String>>(arrayListOf("Ninguno", "Rojo", "Amarillo", "Verde"))
+    private val _testNivel = MutableLiveData<ArrayList<String>>(arrayListOf("Ninguno"))
     val testNivel: LiveData<ArrayList<String>> get() = _testNivel
 
     private val _selectedTestNivel = MutableLiveData<String>(null)
@@ -70,22 +69,41 @@ class VigilanciaViewModel : ViewModel() {
         validateDates()
         filterVigilancia()
     }
+    fun selectAll(vigilanciaList: List<VigilanciaData>) {
+        _selectedResUserIds.value = vigilanciaList.map { it.res_user_id }.toSet()
+    }
+
+    fun deselectAll() {
+        _selectedResUserIds.value = emptySet()
+    }
+
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun getVigilancia() {
         testRepository.getVigilancia { Response ->
             if (Response != null) {
-                _vigilanciaResponse.postValue(Response)
-                _vigilanciaVista.postValue(Response)
                 for (data in Response.data!!) {
                     data.fecha_fin = DateUtils.formatDateTime(data.fecha_fin)
                 }
+                _vigilanciaResponse.postValue(Response)
+                _vigilanciaVista.postValue(Response)
 
             }
         }
         testRepository.getTests { Response ->
-            for (data in Response?.data!!) {
-                _testTipo.postValue(ArrayList((_testTipo.value ?: arrayListOf()).apply { add(data.titulo) }))
+            if (Response != null) {
+                for (data in Response.data) {
+                    _testTipo.postValue(ArrayList((_testTipo.value ?: arrayListOf()).apply { add(data.titulo) }))
+                }
+            }
+        }
+        testRepository.getAnsiedadSemaforo {
+            Response->
+            if (Response != null) {
+                for(data in Response.data){
+                    _testNivel.postValue(ArrayList((_testNivel.value ?: arrayListOf()).apply { add(data.semaforo) }))
+                }
             }
         }
 
@@ -96,7 +114,7 @@ class VigilanciaViewModel : ViewModel() {
         val originalList = _vigilanciaResponse.value?.data ?: return
         val filteredList = originalList.filter { data ->
             val matchesTipo = _selectedTestTipo.value.isNullOrEmpty() || _selectedTestTipo.value == "Ninguno" || data.titulo == _selectedTestTipo.value
-            val matchesNivel = _selectedTestNivel.value.isNullOrEmpty() || _selectedTestNivel.value == "Ninguno" || data.estado == _selectedTestNivel.value
+            val matchesNivel = _selectedTestNivel.value.isNullOrEmpty() || _selectedTestNivel.value == "Ninguno" || data.semaforo_nivel == _selectedTestNivel.value
             val matchesPeriodo = (_fechaInicio.value == null || parseDate(data.fecha_fin)?.isAfter(_fechaInicio.value?.minusDays(1)) == true) &&
                     (_fechaFin.value == null || parseDate(data.fecha_fin)?.isBefore(_fechaFin.value?.plusDays(1)) == true)
             matchesTipo && matchesNivel && matchesPeriodo

@@ -176,10 +176,10 @@ fun RealizarTest(
 }
 
 @Composable
-fun SemaforoIndicator(level: String) {
-    val color = when (level) {
+fun SemaforoIndicator(level: String,semaforo : String) {
+    val color = when (semaforo) {
         "Rojo" -> Color.Red
-        "Amarillo" -> Color.Yellow
+        "Ambar" -> Color.Yellow
         "Verde" -> Color.Green
         else -> Color.Gray
     }
@@ -200,7 +200,7 @@ fun ResultDialog(testGuardado: TestResponse, onDismiss: () -> Unit, onConfirm: (
             Column {
                 Text(text = "Puntuación: ${testGuardado.puntuacion}", style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(16.dp))
-                SemaforoIndicator(level = testGuardado.semaforo ?: "Desconocido")
+                SemaforoIndicator(level = testGuardado.estado ?: "Desconocido",semaforo= testGuardado.semaforo)
             }
         },
         confirmButton = {
@@ -210,7 +210,7 @@ fun ResultDialog(testGuardado: TestResponse, onDismiss: () -> Unit, onConfirm: (
                     onDismiss()
                 }
             ) {
-                if (testGuardado.semaforo == "Amarillo" || testGuardado.semaforo == "Rojo") {
+                if (testGuardado.semaforo == "Ambar" || testGuardado.semaforo == "Rojo") {
                     Text("Agendar cita")
                 } else {
                     Text("Confirmar")

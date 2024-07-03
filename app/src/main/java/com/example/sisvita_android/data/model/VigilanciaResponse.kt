@@ -7,6 +7,7 @@ data class VigilanciaResponse(
 )
 
 data class VigilanciaData(
+    val usuario_id:Int,
     val nombre: String,
     val apellido_paterno: String,
     val apellido_materno: String,
@@ -15,8 +16,9 @@ data class VigilanciaData(
     val puntuacion: Int,
     val test_id: Int,
     val titulo: String,
-    val estado: String,
+    val test_nivel: String,
     val diagnostico_id: Int?,
     val ansiedad_id: Int?,
-    val nivel: String?
+    val diag_ansiedad_nivel: String?,
+    val semaforo_nivel: String
 )

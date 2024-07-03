@@ -6,5 +6,7 @@ data class RegistrarUsuarioRequest(
     val apellido_materno: String,
     val correo_electronico: String,
     val contrasena: String,
-    val ubigeo: Int
+    val departamento: String,
+    val provincia: String,
+    val distrito: String
 )

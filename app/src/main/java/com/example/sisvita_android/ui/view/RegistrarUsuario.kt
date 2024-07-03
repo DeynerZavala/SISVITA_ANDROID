@@ -4,19 +4,44 @@ import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -31,13 +56,16 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ArrowLeft
 import compose.icons.fontawesomeicons.solid.Eye
+import compose.icons.fontawesomeicons.solid.EyeSlash
 import kotlinx.coroutines.launch
 
-import compose.icons.fontawesomeicons.solid.EyeSlash
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun RegistrarUsuario(navController: NavController, registrarUsuarioViewModel: RegistrarUsuarioViewModel = viewModel()) {
+fun RegistrarUsuario(
+    navController: NavController,
+    registrarUsuarioViewModel: RegistrarUsuarioViewModel = viewModel()
+) {
     val nombre by registrarUsuarioViewModel.nombre.observeAsState("")
     val apellidoPaterno by registrarUsuarioViewModel.apellidoPaterno.observeAsState("")
     val apellidoMaterno by registrarUsuarioViewModel.apellidoMaterno.observeAsState("")
@@ -53,7 +81,17 @@ fun RegistrarUsuario(navController: NavController, registrarUsuarioViewModel: Re
     val contrasenaValido: Boolean by registrarUsuarioViewModel.contrasenaValido.observeAsState(false)
     val roles = registrarUsuarioViewModel.roles
     val selectedRole by registrarUsuarioViewModel.selectedRole.observeAsState(roles[0])
+
     val context = LocalContext.current
+
+    val departamentos by registrarUsuarioViewModel.departamentos.observeAsState(emptyList())
+    val provincias by registrarUsuarioViewModel.provincias.observeAsState(emptyList())
+    val distritos by registrarUsuarioViewModel.distritos.observeAsState(emptyList())
+
+    val selectedDepartamento by registrarUsuarioViewModel.departamento.observeAsState("")
+    val selectedProvincia by registrarUsuarioViewModel.provincia.observeAsState("")
+    val selectedDistrito by registrarUsuarioViewModel.distrito.observeAsState("")
+
 
     val dropdownItems by registrarUsuarioViewModel.dropdownItems.observeAsState(emptyList())
     val selectedDropdownItem by registrarUsuarioViewModel.selectedDropdownItem.observeAsState()
@@ -83,7 +121,11 @@ fun RegistrarUsuario(navController: NavController, registrarUsuarioViewModel: Re
                 .size(40.dp)
                 .align(Alignment.Start)
         ) {
-            Icon(imageVector = FontAwesomeIcons.Solid.ArrowLeft, contentDescription = null, modifier = Modifier.size(24.dp))
+            Icon(
+                imageVector = FontAwesomeIcons.Solid.ArrowLeft,
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
         }
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -97,7 +139,12 @@ fun RegistrarUsuario(navController: NavController, registrarUsuarioViewModel: Re
                     modifier = Modifier.size(200.dp)
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-                Text("SISVITA", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                Text(
+                    "SISVITA",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = nombre,
@@ -169,7 +216,11 @@ fun RegistrarUsuario(navController: NavController, registrarUsuarioViewModel: Re
                             FontAwesomeIcons.Solid.Eye
 
                         IconButton(onClick = { contrasenaVisible = !contrasenaVisible }) {
-                            Icon(imageVector = image, contentDescription = null, modifier = Modifier.size(20.dp))
+                            Icon(
+                                imageVector = image,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -191,8 +242,14 @@ fun RegistrarUsuario(navController: NavController, registrarUsuarioViewModel: Re
                         else
                             FontAwesomeIcons.Solid.Eye
 
-                        IconButton(onClick = { confirmarContrasenaVisible = !confirmarContrasenaVisible }) {
-                            Icon(imageVector = image, contentDescription = null, modifier = Modifier.size(20.dp))
+                        IconButton(onClick = {
+                            confirmarContrasenaVisible = !confirmarContrasenaVisible
+                        }) {
+                            Icon(
+                                imageVector = image,
+                                contentDescription = null,
+                                modifier = Modifier.size(20.dp)
+                            )
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -211,19 +268,127 @@ fun RegistrarUsuario(navController: NavController, registrarUsuarioViewModel: Re
                     )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
-                OutlinedTextField(
-                    value = ubigeo,
-                    onValueChange = { registrarUsuarioViewModel.onUbigeoChange(it) },
-                    label = { Text("Ubigeo") },
-                    placeholder = { Text("Ingrese su ubigeo") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = MaterialTheme.colorScheme.primary,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+
+
+                // Combobox for Departamento
+                ExposedDropdownMenuBox(
+                    expanded = registrarUsuarioViewModel.departamentoMenuExpanded.observeAsState(
+                        false
+                    ).value,
+                    onExpandedChange = { registrarUsuarioViewModel.onDepartamentoMenuExpandedChange() }
+                ) {
+                    OutlinedTextField(
+                        readOnly = true,
+                        value = selectedDepartamento,
+                        onValueChange = {},
+                        label = { Text("Departamento") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                expanded = registrarUsuarioViewModel.departamentoMenuExpanded.observeAsState(
+                                    false
+                                ).value
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor()
                     )
-                )
-                Spacer(modifier = Modifier.height(10.dp))
+                    ExposedDropdownMenu(
+                        expanded = registrarUsuarioViewModel.departamentoMenuExpanded.observeAsState(
+                            false
+                        ).value,
+                        onDismissRequest = { registrarUsuarioViewModel.onDepartamentoMenuExpandedChange() }
+                    ) {
+                        departamentos.forEach { departamento ->
+                            DropdownMenuItem(
+                                text = { Text(departamento) },
+                                onClick = {
+                                    registrarUsuarioViewModel.onDepartamentoChange(departamento)
+                                    registrarUsuarioViewModel.onDepartamentoMenuExpandedChange()
+                                }
+                            )
+                        }
+                    }
+                }
+
+// Combobox for Provincia
+                ExposedDropdownMenuBox(
+                    expanded = registrarUsuarioViewModel.provinciaMenuExpanded.observeAsState(false).value,
+                    onExpandedChange = { registrarUsuarioViewModel.onProvinciaMenuExpandedChange() }
+                ) {
+                    OutlinedTextField(
+                        readOnly = true,
+                        value = selectedProvincia,
+                        onValueChange = {},
+                        label = { Text("Provincia") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                expanded = registrarUsuarioViewModel.provinciaMenuExpanded.observeAsState(
+                                    false
+                                ).value
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = registrarUsuarioViewModel.provinciaMenuExpanded.observeAsState(
+                            false
+                        ).value,
+                        onDismissRequest = { registrarUsuarioViewModel.onProvinciaMenuExpandedChange() }
+                    ) {
+                        provincias.forEach { provincia ->
+                            DropdownMenuItem(
+                                text = { Text(provincia) },
+                                onClick = {
+                                    registrarUsuarioViewModel.onProvinciaChange(provincia)
+                                    registrarUsuarioViewModel.onProvinciaMenuExpandedChange()
+                                }
+                            )
+                        }
+                    }
+                }
+
+// Combobox for Distrito
+                ExposedDropdownMenuBox(
+                    expanded = registrarUsuarioViewModel.distritoMenuExpanded.observeAsState(false).value,
+                    onExpandedChange = { registrarUsuarioViewModel.onDistritoMenuExpandedChange() }
+                ) {
+                    OutlinedTextField(
+                        readOnly = true,
+                        value = selectedDistrito,
+                        onValueChange = {},
+                        label = { Text("Distrito") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(
+                                expanded = registrarUsuarioViewModel.distritoMenuExpanded.observeAsState(
+                                    false
+                                ).value
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = registrarUsuarioViewModel.distritoMenuExpanded.observeAsState(
+                            false
+                        ).value,
+                        onDismissRequest = { registrarUsuarioViewModel.onDistritoMenuExpandedChange() }
+                    ) {
+                        distritos.forEach { distrito ->
+                            DropdownMenuItem(
+                                text = { Text(distrito) },
+                                onClick = {
+                                    registrarUsuarioViewModel.onDistritoChange(distrito)
+                                    registrarUsuarioViewModel.onDistritoMenuExpandedChange()
+                                }
+                            )
+                        }
+                    }
+                }
+
 
                 Text("Selecciona tu rol:")
                 Spacer(modifier = Modifier.height(10.dp))
@@ -250,7 +415,7 @@ fun RegistrarUsuario(navController: NavController, registrarUsuarioViewModel: Re
                             readOnly = true,
                             value = selectedDropdownItem?.titulo_name ?: "",
                             onValueChange = {},
-                            label = { Text("Seleccion su titulo")},
+                            label = { Text("Seleccion su titulo") },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                             },
@@ -268,7 +433,9 @@ fun RegistrarUsuario(navController: NavController, registrarUsuarioViewModel: Re
                                     text = { Text(text = option.titulo_name) },
                                     onClick = {
                                         expanded = false
-                                        registrarUsuarioViewModel.onSelectedDropdownItemChange(option)
+                                        registrarUsuarioViewModel.onSelectedDropdownItemChange(
+                                            option
+                                        )
                                     }
                                 )
                             }

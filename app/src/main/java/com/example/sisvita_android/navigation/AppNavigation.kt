@@ -1,6 +1,5 @@
 package com.example.sisvita_android.navigation
 
-import com.example.sisvita_android.ui.view.Home
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -10,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.sisvita_android.ui.view.EvaluarTest
+import com.example.sisvita_android.ui.view.Home
 import com.example.sisvita_android.ui.view.Login
 import com.example.sisvita_android.ui.view.MapaDeCalor
 import com.example.sisvita_android.ui.view.RealizarTest
@@ -21,18 +21,18 @@ import com.example.sisvita_android.ui.view.Vigilancia
 @Composable
 fun AppNavigation(){
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = AppScreen.login.route){
+    NavHost(navController = navController, startDestination = AppScreen.login.route) {
 
-        composable(route = AppScreen.login.route){
+        composable(route = AppScreen.login.route) {
             Login(navController)
         }
-        composable(route= AppScreen.home.route){
+        composable(route = AppScreen.home.route) {
             Home(navController)
         }
-        composable(route = AppScreen.registrarUsuario.route){
+        composable(route = AppScreen.registrarUsuario.route) {
             RegistrarUsuario(navController)
         }
-        composable(route = AppScreen.testHome.route){
+        composable(route = AppScreen.testHome.route) {
             TestHome(navController)
         }
         composable(
@@ -41,19 +41,28 @@ fun AppNavigation(){
         ) { backStackEntry ->
             RealizarTest(backStackEntry.arguments?.getInt("testId") ?: 0, navController)
         }
-        composable(AppScreen.vigilancia.route){
+        composable(AppScreen.vigilancia.route) {
             Vigilancia(navController)
         }
-        composable(AppScreen.evaluarTest.route){
-            EvaluarTest(navController)
-        }
+
         composable(
             route = AppScreen.mapaDeCarlor.route + "/{res_user_ids}",
             arguments = listOf(navArgument("res_user_ids") { type = NavType.StringType })
         ) { backStackEntry ->
-            val resUserIds = backStackEntry.arguments?.getString("res_user_ids")?.split(",")?.map { it.toInt() } ?: emptyList()
+            val resUserIds =
+                backStackEntry.arguments?.getString("res_user_ids")?.split(",")?.map { it.toInt() }
+                    ?: emptyList()
             MapaDeCalor(resUserIds, navController)
         }
+
+        composable(
+            route = AppScreen.evaluarTest.route + "/{res_user_id}",
+            arguments = listOf(navArgument("res_user_id") { type = NavType.IntType })
+        ) { backStackEntry ->
+            EvaluarTest(resUserId= backStackEntry.arguments?.getInt("res_user_id")?: 0 , navController = navController)
+        }
+
+
     }
 
 }

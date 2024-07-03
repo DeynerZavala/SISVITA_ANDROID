@@ -1,31 +1,44 @@
 package com.example.sisvita_android.ui.view
 
-import android.annotation.SuppressLint
 import android.icu.text.SimpleDateFormat
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
-import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
@@ -35,7 +48,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,21 +60,20 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sisvita_android.data.model.VigilanciaData
 import com.example.sisvita_android.ui.viewmodel.VigilanciaViewModel
-import kotlinx.coroutines.launch
+import com.google.gson.Gson
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.O)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Vigilancia(
     navController: NavController,
     vigilanciaViewModel: VigilanciaViewModel = viewModel()
 ) {
-    val vigilanciaList by vigilanciaViewModel.vigilanciaVista.observeAsState()
+    val vigilanciaResponse by vigilanciaViewModel.vigilanciaVista.observeAsState()
+    val vigilanciaList = vigilanciaResponse?.data ?: emptyList()
     val selectedResUserIds by vigilanciaViewModel.selectedResUserIds.observeAsState(emptySet())
     var showDialog by remember { mutableStateOf(false) }
 
@@ -132,20 +143,42 @@ fun Vigilancia(
                 Periodo()
                 TestTipo()
                 TestNivel()
+                SelectAllToggle(vigilanciaList, selectedResUserIds.size == vigilanciaList.size) {
+                    if (selectedResUserIds.size == vigilanciaList.size) {
+                        vigilanciaViewModel.deselectAll()
+                    } else {
+                        vigilanciaViewModel.selectAll(vigilanciaList)
+                    }
+                }
             }
             item {
                 TableHeader()
             }
-            vigilanciaList?.let { list ->
-                items(list.data) { item ->
-                    VigilanciaRow(item, selectedResUserIds) { selectedId ->
-                        vigilanciaViewModel.toggleSelection(selectedId)
-                    }
+            items(vigilanciaList) { item ->
+                VigilanciaRow(item, selectedResUserIds,navController) { selectedId ->
+                    vigilanciaViewModel.toggleSelection(selectedId)
                 }
             }
         }
     }
 }
+
+
+@Composable
+fun SelectAllToggle(vigilanciaList: List<VigilanciaData>, allSelected: Boolean, onToggle: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Button(onClick = onToggle) {
+            Text(text = if (allSelected) "Deseleccionar Todo" else "Seleccionar Todo")
+        }
+    }
+}
+
+
 
 @Composable
 fun TableHeader() {
@@ -162,8 +195,8 @@ fun TableHeader() {
         TableCell("Fecha Fin")
         TableCell("Puntuacion")
         TableCell("Titulo")
-        TableCell("Estado")
         TableCell("Nivel")
+        TableCell("Mas")
     }
 }
 
@@ -184,10 +217,18 @@ fun TableCell(text: String) {
     }
 }
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun VigilanciaRow(vigilancia: VigilanciaData, selectedResUserIds: Set<Int>, onSelect: (Int) -> Unit) {
+fun VigilanciaRow(
+    vigilancia: VigilanciaData,
+    selectedResUserIds: Set<Int>,
+    navController: NavController,
+    onSelect: (Int) -> Unit
+) {
     val isSelected = selectedResUserIds.contains(vigilancia.res_user_id)
+    var expanded by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -197,15 +238,124 @@ fun VigilanciaRow(vigilancia: VigilanciaData, selectedResUserIds: Set<Int>, onSe
             .background(if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else Color.White),
         shape = MaterialTheme.shapes.medium
     ) {
-        Row(modifier = Modifier.padding(2.dp)) {
+        Row(
+            modifier = Modifier
+                .padding(2.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             TableCell(vigilancia.nombre ?: "N/A")
             TableCell(vigilancia.apellido_paterno ?: "N/A")
             TableCell(vigilancia.apellido_materno ?: "N/A")
             TableCell(vigilancia.fecha_fin ?: "N/A")
             TableCell(vigilancia.puntuacion.toString())
             TableCell(vigilancia.titulo ?: "N/A")
-            TableCell(vigilancia.estado ?: "N/A")
+            CircleTableCell(vigilancia.semaforo_nivel ?: "N/A")
+            Box(
+                modifier = Modifier
+                    .wrapContentSize(Alignment.TopEnd)
+            ) {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(Icons.Default.MoreVert, contentDescription = "Más opciones")
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "Ver más") },
+                        onClick = { showDialog = true }
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = "Evaluar Test") },
+                        onClick = {
+                            expanded = false
+                            navController.navigate("evaluarTest/${vigilancia.res_user_id}")
+                        }
+                    )
+                }
+            }
         }
+    }
+
+    if (showDialog) {
+        VigilanciaDetailDialog(
+            vigilancia = vigilancia,
+            onDismiss = { showDialog = false }
+        )
+    }
+}
+
+
+fun VigilanciaData.toJson(): String {
+    return Gson().toJson(this)
+}
+
+@Composable
+fun VigilanciaDetailDialog(vigilancia: VigilanciaData, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = "Detalles de Vigilancia", style = MaterialTheme.typography.headlineMedium)
+        },
+        text = {
+            Column {
+                Text(text = "Nombre: ${vigilancia.nombre?:"N/A"}")
+                Text(text = "Apellido Paterno: ${vigilancia.apellido_paterno?:"N/A"}")
+                Text(text = "Apellido Materno: ${vigilancia.apellido_materno?:"N/A"}")
+                Text(text = "Fecha Fin: ${vigilancia.fecha_fin?:"N/A"}")
+                Text(text = "Puntuacion: ${vigilancia.puntuacion?:"N/A"}")
+                Text(text = "Titulo: ${vigilancia.titulo?:"N/A"}")
+                Text(text = "Nivel del Test: ${vigilancia.test_nivel?:"N/A"}")
+                Text(text = "Nivel de Ansiedad del diagnostico : ${vigilancia.diag_ansiedad_nivel?:"N/A"}")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(text = "Nivel de Ansiedad : ")
+                    CircleTableCell(vigilancia.semaforo_nivel ?: "N/A")
+                }
+
+
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismiss) {
+                Text("Cerrar")
+            }
+        }
+    )
+}
+@Composable
+fun CircleTableCell(nivel: String) {
+    Box(
+        modifier = Modifier
+            .width(45.dp)
+            .padding(1.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        DrawCircle(nivel = nivel, radius = 30.0f)
+    }
+}
+
+@Composable
+fun DrawCircle(nivel: String, radius: Float) {
+    val color = when (nivel) {
+        "Rojo" -> Color.Red
+        "Ambar" -> Color.Yellow
+        "Verde" -> Color.Green
+        else -> Color.Gray
+    }
+    Canvas(
+        modifier = Modifier
+            .size((2 * radius).dp)
+            .padding(4.dp)
+    ) {
+        drawCircle(
+            color = color,
+            radius = radius
+        )
     }
 }
 
@@ -269,7 +419,7 @@ fun TestNivel (vigilanciaViewModel: VigilanciaViewModel = viewModel()){
             readOnly = true,
             value = selectedTNivel?:"",
             onValueChange = {},
-            label = { Text("Selecciona el estado")},
+            label = { Text("Selecciona el nivel")},
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
             },
