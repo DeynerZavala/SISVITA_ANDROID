@@ -157,7 +157,7 @@ fun EvaluarTest(
                         readOnly = true,
                         value = displayTextAnsiedad,
                         onValueChange = {},
-                        label = { Text("Selecciona el Nivel de Ansiedad") },
+                        label = { Text(stringResource(R.string.selecciona_el_nivel_de_ansiedad)) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedAnsiedad)
                         },
@@ -202,7 +202,7 @@ fun EvaluarTest(
                         readOnly = true,
                         value = displayTextTratamiento,
                         onValueChange = {},
-                        label = { Text("Selecciona el Tratamiento") },
+                        label = { Text(stringResource(R.string.selecciona_el_tratamiento)) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTratamiento)
                         },
@@ -233,7 +233,7 @@ fun EvaluarTest(
                 OutlinedTextField(
                     value = fundamentacionCientifica,
                     onValueChange = { fundamentacionCientifica = it },
-                    label = { Text("Fundamentación Científica") },
+                    label = { Text(stringResource(R.string.fundamentaci_n_cient_fica)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -247,7 +247,7 @@ fun EvaluarTest(
                 OutlinedTextField(
                     value = comunicacionEstudiante,
                     onValueChange = { comunicacionEstudiante = it },
-                    label = { Text("Comunicación respecto al Estudiante") },
+                    label = { Text(stringResource(R.string.comunicaci_n_respecto_al_estudiante)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -297,7 +297,7 @@ fun EvaluarTest(
                             )
                         },
                     ) {
-                        Text("Guardar Evaluación")
+                        Text(stringResource(R.string.guardar_evaluaci_n))
                     }
                 }
             }

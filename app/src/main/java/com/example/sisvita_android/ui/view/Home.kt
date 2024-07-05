@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -100,28 +101,28 @@ fun Home(navController: NavController) {
             if (UserManager.getRol() == "Usuario") {
                 item {
                     Button(onClick = { navController.navigate(AppScreen.testHome.route) }) {
-                        Text("Realizar Test")
+                        Text(stringResource(R.string.realizar_test))
                     }
                 }
                 item {
                     Button(onClick = { /* TODO: Handle click */ }) {
-                        Text("Consultar Resultado")
+                        Text(stringResource(R.string.consultar_resultado))
                     }
                 }
                 item {
                     Button(onClick = { /* TODO: Handle click */ }) {
-                        Text("Recomendaciones")
+                        Text(stringResource(R.string.recomendaciones))
                     }
                 }
                 item {
                     Button(onClick = { /* TODO: Handle click */ }) {
-                        Text("Foro de Discusión")
+                        Text(stringResource(R.string.foro_de_discusi_n))
                     }
                 }
             } else if (UserManager.getRol() == "Especialista") {
                 item {
                     Button(onClick = { navController.navigate(AppScreen.vigilancia.route) }) {
-                        Text("Realizar Vigilancia")
+                        Text(stringResource(R.string.realizar_vigilancia_))
                     }
                 }
             }
@@ -148,7 +149,7 @@ fun LogoutDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
             Text(text = "Cerrar sesión")
         },
         text = {
-            Text("¿Estás seguro de que deseas cerrar sesión?")
+            Text(stringResource(R.string.est_s_seguro_de_que_deseas_cerrar_sesi_n))
         },
         confirmButton = {
             Button(
@@ -157,12 +158,12 @@ fun LogoutDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
                     onDismiss()
                 }
             ) {
-                Text("Confirmar")
+                Text(stringResource(R.string.confirmar_))
             }
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text("Cancelar")
+                Text(stringResource(R.string.cancelar_))
             }
         }
     )

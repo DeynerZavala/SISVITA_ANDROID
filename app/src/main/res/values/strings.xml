@@ -42,4 +42,17 @@
     <string name="seleccione_al_menos_un_elemento">Seleccione al menos un elemento</string>
     <string name="realizar_vigilancia">REALIZAR VIGILANCIA</string>
     <string name="enviar_selecci_n">Enviar Selección</string>
+    <string name="selecciona_el_nivel_de_ansiedad">Selecciona el Nivel de Ansiedad</string>
+    <string name="selecciona_el_tratamiento">Selecciona el Tratamiento</string>
+    <string name="fundamentaci_n_cient_fica">Fundamentación Científica</string>
+    <string name="comunicaci_n_respecto_al_estudiante">Comunicación respecto al Estudiante</string>
+    <string name="guardar_evaluaci_n">Guardar Evaluación</string>
+    <string name="realizar_test">Realizar Test</string>
+    <string name="consultar_resultado">Consultar Resultado</string>
+    <string name="recomendaciones">Recomendaciones</string>
+    <string name="foro_de_discusi_n">Foro de Discusión</string>
+    <string name="realizar_vigilancia_">Realizar Vigilancia</string>
+    <string name="est_s_seguro_de_que_deseas_cerrar_sesi_n">¿Estás seguro de que deseas cerrar sesión?</string>
+    <string name="confirmar_">Confirmar</string>
+    <string name="cancelar_">Cancelar</string>
 </resources>
