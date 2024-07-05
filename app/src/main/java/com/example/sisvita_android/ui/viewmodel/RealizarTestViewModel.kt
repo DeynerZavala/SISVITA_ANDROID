@@ -61,8 +61,9 @@ class RealizarTestViewModel : ViewModel() {
                     usuario_id = it.usuario_id
                 ) { response ->
                     _testGuardado.postValue(response)
-                    if ( response?.message  == "Faltan datos en las preguntas"
-                        || response?.message  =="Datos incompletos"){
+                    if ((response?.message == "Faltan datos en las preguntas")
+                        || (response?.message == "Datos incompletos")
+                    ){
 
                         _testMensaje.postValue("Por favor complete todas preguntas")
 

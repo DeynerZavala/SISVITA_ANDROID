@@ -1,5 +1,6 @@
 package com.example.sisvita_android.ui.view
 
+
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -60,6 +61,7 @@ import compose.icons.fontawesomeicons.solid.Eye
 import compose.icons.fontawesomeicons.solid.EyeSlash
 import kotlinx.coroutines.launch
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -83,19 +85,25 @@ fun RegistrarUsuario(
     val roles = registrarUsuarioViewModel.roles
     val selectedRole by registrarUsuarioViewModel.selectedRole.observeAsState(roles[0])
 
+
     val context = LocalContext.current
+
 
     val departamentos by registrarUsuarioViewModel.departamentos.observeAsState(emptyList())
     val provincias by registrarUsuarioViewModel.provincias.observeAsState(emptyList())
     val distritos by registrarUsuarioViewModel.distritos.observeAsState(emptyList())
+
 
     val selectedDepartamento by registrarUsuarioViewModel.departamento.observeAsState("")
     val selectedProvincia by registrarUsuarioViewModel.provincia.observeAsState("")
     val selectedDistrito by registrarUsuarioViewModel.distrito.observeAsState("")
 
 
+
+
     val dropdownItems by registrarUsuarioViewModel.dropdownItems.observeAsState(emptyList())
     val selectedDropdownItem by registrarUsuarioViewModel.selectedDropdownItem.observeAsState()
+
 
     LaunchedEffect(Unit) {
         launch {
@@ -110,6 +118,7 @@ fun RegistrarUsuario(
             navController.navigate(AppScreen.login.route)
         }
     }
+
 
     Column(
         modifier = Modifier
@@ -217,6 +226,7 @@ fun RegistrarUsuario(
                         else
                             FontAwesomeIcons.Solid.Eye
 
+
                         IconButton(onClick = { contrasenaVisible = !contrasenaVisible }) {
                             Icon(
                                 imageVector = image,
@@ -244,6 +254,7 @@ fun RegistrarUsuario(
                         else
                             FontAwesomeIcons.Solid.Eye
 
+
                         IconButton(onClick = {
                             confirmarContrasenaVisible = !confirmarContrasenaVisible
                         }) {
@@ -270,6 +281,8 @@ fun RegistrarUsuario(
                     )
                 }
                 Spacer(modifier = Modifier.height(10.dp))
+
+
 
 
                 // Combobox for Departamento
@@ -312,6 +325,10 @@ fun RegistrarUsuario(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(10.dp))
+
+
+
 
 // Combobox for Provincia
                 ExposedDropdownMenuBox(
@@ -351,6 +368,10 @@ fun RegistrarUsuario(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(10.dp))
+
+
+
 
 // Combobox for Distrito
                 ExposedDropdownMenuBox(
@@ -390,6 +411,7 @@ fun RegistrarUsuario(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(10.dp))
 
 
                 Text(stringResource(R.string.selecciona_tu_rol))
@@ -404,9 +426,11 @@ fun RegistrarUsuario(
                     }
                 }
 
+
                 if (selectedRole == stringResource(R.string.especialista)) {
                     Spacer(modifier = Modifier.height(16.dp))
                     var expanded by remember { mutableStateOf(false) }
+
 
                     ExposedDropdownMenuBox(
                         expanded = expanded,
@@ -427,6 +451,7 @@ fun RegistrarUsuario(
                                 .fillMaxWidth()
                         )
 
+
                         ExposedDropdownMenu(
                             expanded = expanded,
                             onDismissRequest = { expanded = false }) {
@@ -445,6 +470,7 @@ fun RegistrarUsuario(
                     }
                 }
 
+
                 mensajeResult?.let {
                     if (registroValido == false) {
                         Spacer(modifier = Modifier.height(10.dp))
@@ -455,6 +481,7 @@ fun RegistrarUsuario(
                         )
                     }
                 }
+
 
                 Button(
                     onClick = {
@@ -484,3 +511,4 @@ fun RegistrarUsuario(
         }
     }
 }
+
