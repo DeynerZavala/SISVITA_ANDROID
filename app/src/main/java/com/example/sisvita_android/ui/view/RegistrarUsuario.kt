@@ -41,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -103,7 +104,8 @@ fun RegistrarUsuario(
     }
     LaunchedEffect(registroValido) {
         if (registroValido == true) {
-            Toast.makeText(context, "Usuario registrado exitosamente", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context,
+                context.getString(R.string.usuario_registrado_exitosamente), Toast.LENGTH_SHORT).show()
             registrarUsuarioViewModel.onRegistroValidoChange()
             navController.navigate(AppScreen.login.route)
         }
@@ -140,7 +142,7 @@ fun RegistrarUsuario(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    "SISVITA",
+                    stringResource(R.string.sisvita),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
@@ -149,8 +151,8 @@ fun RegistrarUsuario(
                 OutlinedTextField(
                     value = nombre,
                     onValueChange = { registrarUsuarioViewModel.onNombreChange(it) },
-                    label = { Text("Nombre") },
-                    placeholder = { Text("Ingrese su nombre") },
+                    label = { Text(stringResource(R.string.nombre)) },
+                    placeholder = { Text(stringResource(R.string.ingrese_su_nombre)) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -161,8 +163,8 @@ fun RegistrarUsuario(
                 OutlinedTextField(
                     value = apellidoPaterno,
                     onValueChange = { registrarUsuarioViewModel.onApellidoPaternoChange(it) },
-                    label = { Text("Apellido Paterno") },
-                    placeholder = { Text("Ingrese su apellido paterno") },
+                    label = { Text(stringResource(R.string.apellido_paterno)) },
+                    placeholder = { Text(stringResource(R.string.ingrese_su_apellido_paterno)) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -173,8 +175,8 @@ fun RegistrarUsuario(
                 OutlinedTextField(
                     value = apellidoMaterno,
                     onValueChange = { registrarUsuarioViewModel.onApellidoMaternoChange(it) },
-                    label = { Text("Apellido Materno") },
-                    placeholder = { Text("Ingrese su apellido materno") },
+                    label = { Text(stringResource(R.string.apellido_materno)) },
+                    placeholder = { Text(stringResource(R.string.ingrese_su_apellido_materno)) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -185,8 +187,8 @@ fun RegistrarUsuario(
                 OutlinedTextField(
                     value = correo,
                     onValueChange = { registrarUsuarioViewModel.onCorreoChange(it) },
-                    label = { Text("Correo") },
-                    placeholder = { Text("Ingrese su correo") },
+                    label = { Text(stringResource(R.string.correo)) },
+                    placeholder = { Text(stringResource(R.string.ingrese_su_correo)) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = MaterialTheme.colorScheme.primary,
@@ -196,7 +198,7 @@ fun RegistrarUsuario(
                 )
                 if (!correoValido && correo.isNotEmpty()) {
                     Text(
-                        text = "Correo electrónico no válido",
+                        text = stringResource(R.string.correo_electr_nico_no_v_lido),
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(start = 16.dp)
@@ -206,8 +208,8 @@ fun RegistrarUsuario(
                 OutlinedTextField(
                     value = contrasena,
                     onValueChange = { registrarUsuarioViewModel.onContrasenaChange(it) },
-                    label = { Text("Contraseña") },
-                    placeholder = { Text("Ingrese su contraseña") },
+                    label = { Text(stringResource(R.string.contrase_a)) },
+                    placeholder = { Text(stringResource(R.string.ingrese_su_contrase_a)) },
                     visualTransformation = if (contrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
                         val image = if (contrasenaVisible)
@@ -233,8 +235,8 @@ fun RegistrarUsuario(
                 OutlinedTextField(
                     value = confirmarContrasena,
                     onValueChange = { registrarUsuarioViewModel.onConfirmarContrasenaChange(it) },
-                    label = { Text("Confirmar contraseña") },
-                    placeholder = { Text("Ingrese su contraseña nuevamente") },
+                    label = { Text(stringResource(R.string.confirmar_contrase_a)) },
+                    placeholder = { Text(stringResource(R.string.ingrese_su_contrase_a_nuevamente)) },
                     visualTransformation = if (confirmarContrasenaVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
                         val image = if (confirmarContrasenaVisible)
@@ -261,7 +263,7 @@ fun RegistrarUsuario(
                 )
                 if (!contrasenaValido && confirmarContrasena.isNotEmpty()) {
                     Text(
-                        text = "Contraseña no conciden",
+                        text = stringResource(R.string.contrase_a_no_conciden),
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(start = 16.dp)
@@ -281,7 +283,7 @@ fun RegistrarUsuario(
                         readOnly = true,
                         value = selectedDepartamento,
                         onValueChange = {},
-                        label = { Text("Departamento") },
+                        label = { Text(stringResource(R.string.departamento)) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(
                                 expanded = registrarUsuarioViewModel.departamentoMenuExpanded.observeAsState(
@@ -320,7 +322,7 @@ fun RegistrarUsuario(
                         readOnly = true,
                         value = selectedProvincia,
                         onValueChange = {},
-                        label = { Text("Provincia") },
+                        label = { Text(stringResource(R.string.provincia)) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(
                                 expanded = registrarUsuarioViewModel.provinciaMenuExpanded.observeAsState(
@@ -359,7 +361,7 @@ fun RegistrarUsuario(
                         readOnly = true,
                         value = selectedDistrito,
                         onValueChange = {},
-                        label = { Text("Distrito") },
+                        label = { Text(stringResource(R.string.distrito)) },
                         trailingIcon = {
                             ExposedDropdownMenuDefaults.TrailingIcon(
                                 expanded = registrarUsuarioViewModel.distritoMenuExpanded.observeAsState(
@@ -390,7 +392,7 @@ fun RegistrarUsuario(
                 }
 
 
-                Text("Selecciona tu rol:")
+                Text(stringResource(R.string.selecciona_tu_rol))
                 Spacer(modifier = Modifier.height(10.dp))
                 Row {
                     roles.forEach { role ->
@@ -402,7 +404,7 @@ fun RegistrarUsuario(
                     }
                 }
 
-                if (selectedRole == "Especialista") {
+                if (selectedRole == stringResource(R.string.especialista)) {
                     Spacer(modifier = Modifier.height(16.dp))
                     var expanded by remember { mutableStateOf(false) }
 
@@ -415,7 +417,7 @@ fun RegistrarUsuario(
                             readOnly = true,
                             value = selectedDropdownItem?.titulo_name ?: "",
                             onValueChange = {},
-                            label = { Text("Seleccion su titulo") },
+                            label = { Text(stringResource(R.string.seleccion_su_titulo)) },
                             trailingIcon = {
                                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                             },
@@ -465,7 +467,7 @@ fun RegistrarUsuario(
                     )
                 ) {
                     Text(
-                        text = "REGISTRAR",
+                        text = stringResource(R.string.registrar),
                         color = MaterialTheme.colorScheme.onPrimary,
                         style = MaterialTheme.typography.labelMedium
                     )
@@ -473,7 +475,7 @@ fun RegistrarUsuario(
                 Spacer(modifier = Modifier.height(16.dp))
                 TextButton(onClick = { navController.navigate(AppScreen.login.route) }) {
                     Text(
-                        text = "¿Tiene cuenta? Iniciar Sesión",
+                        text = stringResource(R.string.tiene_cuenta_iniciar_sesi_n),
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodyMedium
                     )

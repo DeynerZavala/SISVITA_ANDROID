@@ -40,11 +40,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.sisvita_android.R
 import com.example.sisvita_android.data.model.TestListData
 import com.example.sisvita_android.utils.DateUtils
 import com.example.sisvita_android.ui.viewmodel.TestHomeViewModel
@@ -61,7 +63,7 @@ fun TestHome(navController: NavController, testHomeViewModel: TestHomeViewModel 
             TopAppBar(
                 title = {
                     Text(
-                        text = "TESTS",
+                        text = stringResource(R.string.tests),
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         color = Color.White,
@@ -98,7 +100,7 @@ fun TestHome(navController: NavController, testHomeViewModel: TestHomeViewModel 
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "No hay test")
+                Text(text = stringResource(R.string.no_hay__test))
             }
         }
     }
@@ -178,7 +180,7 @@ fun TestItem(
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.secondary
                         )) {
-                        Text("Iniciar Test")
+                        Text(stringResource(R.string.iniciar_test))
                     }
                 }
             }

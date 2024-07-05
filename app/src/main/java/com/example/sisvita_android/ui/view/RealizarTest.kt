@@ -39,12 +39,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sisvita_and.RealizarTestViewModel
+import com.example.sisvita_android.R
 import com.example.sisvita_android.data.model.TestAllPreguntas
 import com.example.sisvita_android.data.model.TestResponse
 import com.example.sisvita_android.navigation.AppScreen
@@ -69,7 +71,7 @@ fun RealizarTest(
             TopAppBar(
                 title = {
                     Text(
-                        text = "REALIZANDO TEST ",
+                        text = stringResource(R.string.realizando_test),
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         color = Color.White,
@@ -108,7 +110,7 @@ fun RealizarTest(
                 }
 
                 item {
-                    if (testMensaje != "Respuesta Guardada") {
+                    if (testMensaje != stringResource(R.string.respuesta_guardada)) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -132,7 +134,7 @@ fun RealizarTest(
                                 containerColor = MaterialTheme.colorScheme.primary
                             )
                         ) {
-                            Text("Finalizar test")
+                            Text(stringResource(R.string.finalizar_test))
                         }
                     }
                 }
@@ -163,7 +165,7 @@ fun RealizarTest(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "No hay test")
+                Text(text = stringResource(R.string.no_hay_test))
             }
         }
     }
@@ -194,7 +196,7 @@ fun ResultDialog(testGuardado: TestResponse, onDismiss: () -> Unit, onConfirm: (
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(text = "Resultados del Test", style = MaterialTheme.typography.headlineMedium)
+            Text(text = stringResource(R.string.resultados_del_test), style = MaterialTheme.typography.headlineMedium)
         },
         text = {
             Column {
@@ -210,16 +212,19 @@ fun ResultDialog(testGuardado: TestResponse, onDismiss: () -> Unit, onConfirm: (
                     onDismiss()
                 }
             ) {
-                if (testGuardado.semaforo == "Ambar" || testGuardado.semaforo == "Rojo") {
-                    Text("Agendar cita")
+                if (testGuardado.semaforo == stringResource(R.string.ambar) || testGuardado.semaforo == stringResource(
+                        R.string.rojo
+                    )
+                ) {
+                    Text(stringResource(R.string.agendar_cita))
                 } else {
-                    Text("Confirmar")
+                    Text(stringResource(R.string.confirmar))
                 }
             }
         },
         dismissButton = {
             Button(onClick = onDismiss) {
-                Text("Cancelar")
+                Text(stringResource(R.string.cancelar))
             }
         }
     )

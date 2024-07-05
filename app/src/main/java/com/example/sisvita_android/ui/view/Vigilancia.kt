@@ -52,12 +52,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.sisvita_android.R
 import com.example.sisvita_android.data.model.VigilanciaData
 import com.example.sisvita_android.ui.viewmodel.VigilanciaViewModel
 import com.google.gson.Gson
@@ -84,8 +86,8 @@ fun Vigilancia(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Error") },
-            text = { Text("Seleccione al menos un elemento") },
+            title = { Text(stringResource(R.string.error)) },
+            text = { Text(stringResource(R.string.seleccione_al_menos_un_elemento)) },
             confirmButton = {
                 Button(onClick = { showDialog = false }) {
                     Text("OK")
@@ -99,7 +101,7 @@ fun Vigilancia(
             TopAppBar(
                 title = {
                     Text(
-                        text = "REALIZAR VIGILANCIA",
+                        text = stringResource(R.string.realizar_vigilancia),
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         color = Color.White,
@@ -127,7 +129,7 @@ fun Vigilancia(
                     containerColor = MaterialTheme.colorScheme.primary
                 )
             ) {
-                Text("Enviar Selección", color = Color.White)
+                Text(stringResource(R.string.enviar_selecci_n), color = Color.White)
             }
         }
     ) {
