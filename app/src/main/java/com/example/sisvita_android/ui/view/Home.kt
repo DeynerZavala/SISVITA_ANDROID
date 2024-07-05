@@ -124,11 +124,6 @@ fun Home(navController: NavController) {
                         Text("Realizar Vigilancia")
                     }
                 }
-                item {
-                    Button(onClick = { navController.navigate(AppScreen.mapaDeCarlor.route) }) {
-                        Text("Mapa De Calor")
-                    }
-                }
             }
         }
     }
