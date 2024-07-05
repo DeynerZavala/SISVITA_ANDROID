@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.sisvita_android.R
+import com.example.sisvita_android.navigation.AppScreen
 import com.example.sisvita_android.ui.viewmodel.EvaluarTestViewModel
 import com.example.sisvita_android.utils.UserManager
 
@@ -79,7 +80,9 @@ fun EvaluarTest(
 
     LaunchedEffect(errorMessage) {
         errorMessage?.let {
-            // Por ejemplo, un Toast o un SnackBar
+            if(errorMessage=="Nuevo Diagnostico creado"){
+                navController.navigate(AppScreen.vigilancia.route)
+            }
         }
     }
 
@@ -289,12 +292,13 @@ fun EvaluarTest(
                         onClick = {
                             evaluarTestViewModel.guardarDiagnostico(
                                 usuarioId = evaluarTestResponse?.data?.usuario_id,
-                                especialistaId = UserManager.getUser()?.usuario_id,
+                                especialistaId = UserManager.getUser()?.especialista_id,
                                 comunicacionEstudiante = comunicacionEstudiante,
                                 solicitarCita = solicitarCita,
                                 fundamentacionCientifica = fundamentacionCientifica,
                                 res_user_id = evaluarTestResponse?.data?.res_user_id
                             )
+
                         },
                     ) {
                         Text(stringResource(R.string.guardar_evaluaci_n))

@@ -7,6 +7,7 @@ data class UsuarioResponse(
 )
 data class Usuario(
     val usuario_id: Int,
+    val especialista_id: Int,
     val nombre: String,
     val fecha_registro: String,
     val correo_electronico :String,
